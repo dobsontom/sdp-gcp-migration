@@ -121,7 +121,11 @@ WITH
          add_terminal
    )
 SELECT
-   *
+   *,
+   ROW_NUMBER() OVER (
+      ORDER BY
+         actual_activation_date_time ASC
+   ) AS change_order
 FROM
    main
 WHERE
