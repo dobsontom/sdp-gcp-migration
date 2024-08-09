@@ -125,4 +125,4 @@ SELECT
 FROM
    main
 WHERE
-   sdp_instance_id = 'ID_gs374yej7r'
+   sdp_instance_id = 'ID_gs374yej7r';
