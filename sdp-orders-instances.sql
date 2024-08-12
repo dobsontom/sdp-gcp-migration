@@ -8,14 +8,14 @@ CREATE OR REPLACE TABLE inm-iar-data-warehouse-dev.sdp_report.orders AS (
                   sigma_order_number,
                   order_type,
                   order_subtype AS modify_order_type,
-                  order_date AS commmercial_order_creation_datetime,
+                  order_date,
                FROM
                   `inm-iar-data-warehouse-dev.sdp_orders.fact_sdp_orders`
             ),
             product_offering_instances AS (
                SELECT
                   product_instance_id,
-                  product_offering_id AS product_code,
+                  product_offering_id,
                   secondary_flag
                FROM
                   `inm-iar-data-warehouse-dev.sdp_product_instances.fact_product_offering_instances`
@@ -70,12 +70,12 @@ CREATE OR REPLACE TABLE inm-iar-data-warehouse-dev.sdp_report.orders AS (
             add_site
       )
    SELECT
-      *,
+      * EXCEPT (product_specification_id),
       ROW_NUMBER() OVER (
          PARTITION BY
             product_instance_id
          ORDER BY
-            commmercial_order_creation_datetime ASC
+            order_date ASC
       ) AS change_order
    FROM
       main
