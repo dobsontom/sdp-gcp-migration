@@ -57,6 +57,7 @@ CREATE OR REPLACE TABLE inm-iar-data-warehouse-dev.sdp_report.subscriptions AS (
                SELECT
                   cmd.*,
                   p.component_id,
+                  p.component_name,
                   p.subscription_plan_name,
                   p.subscription_end_date,
                   p.recommitment_start_date,
@@ -106,7 +107,8 @@ CREATE OR REPLACE TABLE inm-iar-data-warehouse-dev.sdp_report.subscriptions AS (
                   t.terminal_provisioning_key,
                   t.gx_terminal_did,
                   t.related_from_dttm AS actual_activation_date_time,
-                  t.is_current_record AS is_latest
+                  t.is_current_record AS is_latest,
+                  t.terminal_network
                FROM
                   add_networkdevice n
                   LEFT JOIN `inm-iar-data-warehouse-dev.unified_subscribers.dim_unified_subscriber_terminal` t ON n.unified_instance_id = t.unified_instance_id
@@ -123,10 +125,24 @@ CREATE OR REPLACE TABLE inm-iar-data-warehouse-dev.sdp_report.subscriptions AS (
             add_terminal
       )
    SELECT
-      *,
+      * EXCEPT (
+         component_id,
+         component_name,
+         identity_related_from_dttm,
+         identity_related_to_dttm,
+         product_related_to_dttm,
+         provisioning_account_id,
+         terminal_network
+      ),
+      CASE
+         WHEN component_name = 'GX'
+         OR msisdn_usage = 'GX'
+         OR terminal_network = 'GX' THEN TRUE
+         ELSE FALSE
+      END AS gx_flag,
       ROW_NUMBER() OVER (
          PARTITION BY
-            unified_instance_id,
+            unified_instance_id
          ORDER BY
             actual_activation_date_time ASC
       ) AS change_order
