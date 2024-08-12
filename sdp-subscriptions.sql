@@ -130,6 +130,7 @@ CREATE OR REPLACE TABLE inm-iar-data-warehouse-dev.sdp_report.subscriptions AS (
          component_name,
          identity_related_from_dttm,
          identity_related_to_dttm,
+         msisdn_usage,
          product_related_to_dttm,
          provisioning_account_id,
          terminal_network
