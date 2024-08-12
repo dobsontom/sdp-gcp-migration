@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE inm-iar-data-warehouse-dev.sdp_report.orders AS (
+CREATE OR REPLACE TABLE `inm-iar-data-warehouse-dev.sdp_report.orders` AS (
    WITH
       main AS (
          WITH
